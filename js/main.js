@@ -38,11 +38,11 @@ let toroids = [];
 
 let n = 10;
 for(let i = 0; i < n; i++){
-    let color = Math.random()
+    let c = ((255) / n * (i + 1))/ 255;
     toroids.push(new THREE.Mesh(
         new THREE.TorusGeometry(3, 0.05, 20, 150),
         new THREE.MeshPhongMaterial({
-            color: 0xFFFFFF
+            color: new THREE.Color(c,c,c)
         })
     ));
 
@@ -50,15 +50,19 @@ for(let i = 0; i < n; i++){
     // toroids[i].position.set(0, 0, i / n * 3 );
     // toroids[i].rotation.y = (Math.PI * 2)/(n - i);
     // toroids[i].rotation.x = (Math.PI)/(n / (i+1));
-    // toroids[i].rotation.y = (Math.PI)/(n / (i+1));
+    toroids[i].rotation.y = (Math.PI)/(n / (i+1));
 }
 
-//Outside cube
-geometry = new THREE.BoxGeometry(10,10,10, 10, 15, 20);
-material = new THREE.MeshBasicMaterial({
-    color: 0xFFFFFF, wireframe: true, transparent: true
-});
-let wireframeCube = new THREE.Mesh(geometry, material);
+let wireframeCube = new THREE.Mesh(
+    // new THREE.BoxGeometry(10,10,10, 10, 15, 20),
+    new THREE.SphereGeometry(5, 25, 40),
+
+    new THREE.MeshBasicMaterial({
+        color: 0xFFFFFF, 
+        wireframe: true, 
+        transparent: true
+    })
+);
 scene.add(wireframeCube);
 
 // ambient light
@@ -76,8 +80,7 @@ const animate = function () {
     sphere.rotation.x += 0.025;
     sphere.rotation.y += 0.025;
     toroids.forEach( (t,i) => {
-        // t.rotation.x += 0.005 * (i+1);
-        t.rotation.y += 0.02 * ((i/10)+1);
+        t.rotation.y += 0.02;
     });
     wireframeCube.rotation.x -= 0.01;
     wireframeCube.rotation.y -= 0.01;
