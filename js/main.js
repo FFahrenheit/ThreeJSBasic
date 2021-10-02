@@ -9,9 +9,24 @@ renderer.setClearColor('#111111')
 document.body.appendChild(renderer.domElement);
 camera.position.z = 5;
 
-//Inside cube
+const listener = new THREE.AudioListener();
+camera.add( listener );
+// create a global audio source
+const sound = new THREE.Audio(listener);
+sound.autoplay = true;
+
+// load a sound and set it as the Audio object's buffer
+const audioLoader = new THREE.AudioLoader();
+audioLoader.load( 'assets/audio.mp3', ( buffer ) => {
+    sound.setBuffer(buffer);
+	sound.setLoop(true);
+	sound.setVolume(0.4);
+	// sound.play();
+});
+
+//Inside spphere
 let sphere = new THREE.Mesh(
-    new THREE.SphereGeometry(1, 24, 12),
+    new THREE.SphereGeometry(1.3, 24, 12),
     new THREE.MeshNormalMaterial({ 
         polygonOffset: true,
         polygonOffsetFactor: 1,
@@ -37,10 +52,11 @@ sphere.add( new THREE.LineSegments(
 let toroids = [];
 
 let n = 10;
+let colors = [0, 0.2, 0.4, 0.6, 0.8, 1, 0.8, 0.6, 0.4, 0.2];
 for(let i = 0; i < n; i++){
-    let c = ((255) / n * (i + 1))/ 255;
+    let c = colors[i];
     toroids.push(new THREE.Mesh(
-        new THREE.TorusGeometry(3, 0.05, 20, 150),
+        new THREE.TorusGeometry(4.5, 0.08, 20, 150),
         new THREE.MeshPhongMaterial({
             color: new THREE.Color(c,c,c)
         })
@@ -81,6 +97,7 @@ const animate = function () {
     sphere.rotation.y += 0.025;
     toroids.forEach( (t,i) => {
         t.rotation.y += 0.02;
+        t.rotation.x += 0.02;
     });
     wireframeCube.rotation.x -= 0.01;
     wireframeCube.rotation.y -= 0.01;
